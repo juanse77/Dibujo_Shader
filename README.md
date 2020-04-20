@@ -6,11 +6,11 @@
 
 <h2>Detalles de implementación:</h2>
 
-<p>La animación es una rejilla de 6x6 en las que las filas impares se llenan de un polígono en cada celda y de una circunferencia en las celdas de las filas pares. Los poligonos rotarán a favor y en contra de las agujas del reloj según una función seno. Para que se produzca la rotación se usará una matriz de 2x2 de rotación, la cual se sitúa en el método rotate2D.</p>
+<p>La animación es una rejilla de 6x6 en las que las filas y las columnas se llenan de polígonos y circunferencias en celdas alternas. Los poligonos rotarán a favor y en contra de las agujas del reloj según una función seno. Para que se produzca la rotación se usará una matriz de 2x2 de rotación, la cual se sitúa en el método rotate2D.</p>
 
 <h3>El dibujo de los polígonos:</h3>
 
-<p>Para dibujar los polígonos se hace uso del método poli1. Los polígonos son hexágonos con los lados divididos por su mitad y exendiendo el radio del polígono al doble cada 2pi/NumLados. Los colores de los polígonos se asignarán usando una función que genera valores pseudo-aleatorios y al que se le pasa como semilla un vector vec2 con los valores del índice de columna de la rejilla. El canal rojo tomará el valor devuelto por la función y los canales verde y azul tomarán la parte fraccionaria de la suma y la resta del valor devuelto y del valor 0.5.</p>
+<p>Para dibujar los polígonos se hace uso del método poli1. Los polígonos son hexágonos y decágonos con los lados divididos por su mitad y exendiendo el radio del polígono al doble cada 2pi/NumLados. Los colores de los polígonos se asignarán usando una función que genera valores pseudoaleatorios y al que se le pasa como semilla un vector vec2 con los valores del índice de columna de la rejilla. El canal rojo tomará el valor devuelto por la función y los canales verde y azul tomarán la parte fraccionaria de la suma y la resta del valor devuelto y del valor 0.5.</p>
 
 ```java
 vec3 poli1(in vec2 _st, in int N, in vec2 seed){
@@ -34,7 +34,7 @@ vec3 poli1(in vec2 _st, in int N, in vec2 seed){
 ```
 <h3>El dibujo de los círculos:</h3>
 
-<p>El dibujo de los círculos se realizará mediante la llamada al método circle que utiliza una técnica basada en el uso de la llamada a la función smoothstep, mediante la cual se evita la utilización de raices cuadradas en el cálculo. Los colores de las celdas de circunferencias se realizarán, como en el caso anterior, llamando a la función generadora de valores pseudo-aleatorios pero esta vez no se ha utilizado la función fract en la suma  y resta en los canales verde y azul, de modo que se consigue un color que contrasta con los colores de los polígonos.</p>
+<p>El dibujo de los círculos se realizará mediante la llamada al método circle que utiliza una técnica basada en el uso de la función smoothstep, mediante la cual se evita la utilización de raices cuadradas en el cálculo. Los colores de las celdas de circunferencias se realizarán, como en el caso anterior, llamando a la función generadora de valores pseudoaleatorios pero esta vez no se ha utilizado la función fract en la suma  y resta en los canales verde y azul, de modo que se consigue un color que contrasta con los colores de los polígonos. A todos los círculos se les ha añadido una animación de latido utilizando de nuevo una función seno de la marca de tiempo.</p>
 
 ```java
 vec3 circle(in vec2 _st, in float _radius, in vec2 seed){
@@ -50,21 +50,64 @@ vec3 circle(in vec2 _st, in float _radius, in vec2 seed){
 
 <h3>Animación global:</h3>
 
-<p>El efecto central de la animación se produce mediante la traslación de las filas y columnas de la rejilla de modo cíclico. Para realizar esta animación se toman los valores del seno de los segundos transcurridos desde la activación de la aplicación. Cuando el seno devuelve valores negativos, se anima las filas impares hacia la izquierda y de vuelta al centro, mientras que cuando la función devuelve valores positivos, se desplazan las columnas pares en sentido ascendente y de vuelta al centro. La lógica de este efecto se encuentra en el método moveColumnsRows.</p>
+<p>El efecto central de la animación se produce mediante la traslación de las filas y columnas de la rejilla de modo cíclico. Para realizar esta animación se toman los valores del seno de los segundos transcurridos desde la activación de la aplicación. Cuando el seno devuelve valores negativos, se anima las filas pares e impares, alternativamente en cada ciclo, hacia la izquierda y de vuelta al centro, mientras que cuando la función devuelve valores positivos, se desplazan las columnas pares e impares, también alternativamente en cada ciclo, en sentido ascendente y de vuelta al centro. La lógica de este efecto se encuentra en el método moveColumnsRows.</p>
 
 ```java
 void moveColumnsRows(inout vec2 _st){
     float off = sin(u_time);
+    float i = floor(u_time/TWO_PI);
+
     if (off > 0.)
     {
-        if (floor(mod(_st.y * scale, 2.0)) == 1.)
+        if (floor(mod(_st.y * scale + i, 2.0)) == 1.)
     		_st.x += off;
     }
     else
     {
-        if (floor(mod(_st.x * scale, 2.0)) == 1.)
+        if (floor(mod(_st.x * scale + i, 2.0)) == 1.)
     		_st.y += off;
     }
+}
+```
+
+<h3>El dibujado de la escena:</h3>
+
+<p>La escena se pinta desde el método main el cual se encarga de escalar el marco y de situar cada polígono y cada círculo en su posición final. Para situar los elementos de la forma escogida se ha hecho uso de el método mod aplicado tanto a filas como a columnas.</p>
+
+```java
+void main() {
+    vec2 st = gl_FragCoord.xy/u_resolution;
+    vec3 color = vec3(0.0);
+    
+    moveColumnsRows(st);
+    
+    float row = floor(st.y * scale);
+    float col = floor(st.x * scale);
+    st = fract(st*scale);
+    
+    float pct = max(-sin(u_time), sin(u_time));
+    
+    if(mod(row, 2.) < 1.){
+    	if(mod(col, 2.) < 1.){
+            color = circle(st, 0.5 * pct, vec2(row, row));
+        }else{
+            st -= 0.5;
+            st = rotate2d(sin(-u_time) * PI) * st;
+            color = poli1(st, 6, vec2(col, col));
+        }
+         
+    }else{
+        if(mod(col, 2.) < 1.){
+            st -= 0.5;
+            st = rotate2d(sin(u_time) * PI) * st;
+            color = poli1(st, 10, vec2(col, col));
+        }else{
+            color = circle(st, 0.5 * pct, vec2(row, row));
+        }
+        
+    }
+	
+    gl_FragColor = vec4(color, 1.0);
 }
 ```
 

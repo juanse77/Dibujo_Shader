@@ -1,6 +1,6 @@
-import gifAnimation.*;
+//import gifAnimation.*;
 
-GifMaker ficherogif;
+//GifMaker ficherogif;
 
 PShader sh;
 
@@ -9,10 +9,10 @@ void setup() {
   noStroke();
   sh = loadShader("dibujo.frag");
   
-  ficherogif = new GifMaker( this, "Dibujo_Shader.gif");
-  ficherogif.setRepeat(0);
+//  ficherogif = new GifMaker( this, "Dibujo_Shader.gif");
+//  ficherogif.setRepeat(0);
 
-  frameRate(30);
+//  frameRate(30);
 }
 
 
@@ -23,5 +23,5 @@ void draw() {
   
   rect(0,0,width,height);
   
-  ficherogif.addFrame();
+//  ficherogif.addFrame();
 }

@@ -8,7 +8,8 @@ precision mediump float;
 uniform vec2 u_resolution;
 uniform float u_time;
 
-float scale = 6.0;
+float scale = 7.0;
+float ciclo = 0.;
 
 float random (vec2 _st) {
     return fract(sin(dot(_st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
@@ -51,14 +52,16 @@ vec3 circle(in vec2 _st, in float _radius, in vec2 seed){
 
 void moveColumnsRows(inout vec2 _st){
     float off = sin(u_time);
+    float i = floor(u_time/TWO_PI);
+
     if (off > 0.)
     {
-        if (floor(mod(_st.y * scale, 2.0)) == 1.)
+        if (floor(mod(_st.y * scale + i, 2.0)) == 1.)
     		_st.x += off;
     }
     else
     {
-        if (floor(mod(_st.x * scale, 2.0)) == 1.)
+        if (floor(mod(_st.x * scale + i, 2.0)) == 1.)
     		_st.y += off;
     }
 }
@@ -73,13 +76,26 @@ void main() {
     float col = floor(st.x * scale);
     st = fract(st*scale);
     
+    float pct = max(-sin(u_time), sin(u_time));
+    
     if(mod(row, 2.) < 1.){
-    	float pct = max(-sin(u_time), sin(u_time));
-        color = circle(st, 0.5 * pct, vec2(row, row)); 
+    	if(mod(col, 2.) < 1.){
+            color = circle(st, 0.5 * pct, vec2(row, row));
+        }else{
+            st -= 0.5;
+        	st = rotate2d(sin(-u_time) * PI) * st;
+            color = poli1(st, 6, vec2(col, col));
+        }
+         
     }else{
-        st -= 0.5;
-        st = rotate2d(sin(u_time) * PI) * st;
-        color = poli1(st, 6, vec2(col, col));
+        if(mod(col, 2.) < 1.){
+            st -= 0.5;
+        	st = rotate2d(sin(u_time) * PI) * st;
+            color = poli1(st, 10, vec2(col, col));
+        }else{
+            color = circle(st, 0.5 * pct, vec2(row, row));
+        }
+        
     }
 	
     gl_FragColor = vec4(color, 1.0);
