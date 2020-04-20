@@ -6,7 +6,7 @@
 
 <h2>Detalles de implementación:</h2>
 
-<p>La animación es una rejilla de 6x6 en las que las filas impares se llenan de un polígono en cada celda y de una circunferencia en cada celda de las filas pares. Los poligonos rotarán a favor y en contra de las agujas del reloj según una función seno. Para que se produzca la rotación se usará una matriz de 2x2 de rotación, la cual se sitúa en el método rotate2D.</p>
+<p>La animación es una rejilla de 6x6 en las que las filas impares se llenan de un polígono en cada celda y de una circunferencia en las celdas de las filas pares. Los poligonos rotarán a favor y en contra de las agujas del reloj según una función seno. Para que se produzca la rotación se usará una matriz de 2x2 de rotación, la cual se sitúa en el método rotate2D.</p>
 
 <h3>El dibujo de los polígonos:</h3>
 
@@ -34,7 +34,7 @@ vec3 poli1(in vec2 _st, in int N, in vec2 seed){
 ```
 <h3>El dibujo de los círculos:</h3>
 
-<p>El dibujo de los círculos se realizará mediante la llamada al método circle que utiliza una técnica basada en el uso de la llamada a la función smoothstep, mediante la cual se evita la utilización de raices cuadradas en el cálculo. Los colores de las celdas de circunferencias se realizarán, como en el caso anterior, llamando a la función generadora de valores pseudo-aleatorios pero esta vez no se ha utilizado la función fract, en la suma  y resta en los canales verde y azul, de modo que se consigue un color que contrasta con los colores de los polígonos.</p>
+<p>El dibujo de los círculos se realizará mediante la llamada al método circle que utiliza una técnica basada en el uso de la llamada a la función smoothstep, mediante la cual se evita la utilización de raices cuadradas en el cálculo. Los colores de las celdas de circunferencias se realizarán, como en el caso anterior, llamando a la función generadora de valores pseudo-aleatorios pero esta vez no se ha utilizado la función fract en la suma  y resta en los canales verde y azul, de modo que se consigue un color que contrasta con los colores de los polígonos.</p>
 
 ```java
 vec3 circle(in vec2 _st, in float _radius, in vec2 seed){
