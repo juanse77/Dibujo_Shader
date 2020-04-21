@@ -70,7 +70,7 @@ void moveColumnsRows(inout vec2 _st){
 }
 ```
 
-<h3>El dibujado de la escena:</h3>
+<h3>El dibujo de la escena:</h3>
 
 <p>La escena se pinta desde el método main el cual se encarga de escalar el marco y de situar cada polígono y cada círculo en su posición final. Para situar los elementos de la forma escogida se ha hecho uso de el método mod aplicado tanto a filas como a columnas.</p>
 
