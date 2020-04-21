@@ -1,12 +1,12 @@
 <h1>Dibujo Shader:</h1>
 
-<p>Esta práctica sirve como toma de contacto con la programación de shaders personalizados como alternativa al uso de la secuencia de renderizado predefinida de processing.</p>
+<p>Esta práctica sirve como toma de contacto con la programación de shaders personalizados como alternativa al uso de la secuencia de renderizado predefinida de Processing.</p>
 
 <p>Para la resolución de la práctica se ha desarrollado un shader generativo de fragmento. El resultado de la ejecución del shader es una animación más o menos artística, para la cual se han tomado como ejemplo algunos de los scripts vistos en clase.</p>
 
 <h2>Detalles de implementación:</h2>
 
-<p>La animación es una rejilla de 6x6 en las que las filas y las columnas se llenan de polígonos y circunferencias en celdas alternas. Los poligonos rotarán a favor y en contra de las agujas del reloj según una función seno. Para que se produzca la rotación se usará una matriz de 2x2 de rotación, la cual se sitúa en el método rotate2D.</p>
+<p>La animación es una rejilla de 6x6 en la que las filas y las columnas se llenan de polígonos y circunferencias en celdas alternas. Los poligonos rotarán a favor y en contra de las agujas del reloj según una función seno. Para que se produzca la rotación se usará una matriz de 2x2 de rotación, la cual se sitúa en el método rotate2D.</p>
 
 <h3>El dibujo de los polígonos:</h3>
 
